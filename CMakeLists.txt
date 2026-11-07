@@ -3,5 +3,6 @@ project(NexusNetworkTools)
 
 set(CMAKE_CXX_STANDARD 20)
 
-# Dodajemy podprojekt skanera sieciowego
+# Łączymy oba projekty w jeden potężny kombajn
 add_subdirectory(01_Network_Scanner)
+add_subdirectory(02_Device_Manager)
