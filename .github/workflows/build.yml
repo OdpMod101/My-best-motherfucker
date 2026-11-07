@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # 1. Uruchomienie środowiska Java (niezbędne do narzędzi pakujących)
+    # 1. Uruchomienie środowiska Java
     - name: Ustawienie Javy 17
       uses: actions/setup-java@v4
       with:
@@ -40,8 +40,8 @@ jobs:
     - name: Pakowanie aplikacji AAPT2
       run: |
         mkdir -p out/assets out/lib/arm64-v8a
-        # Kopiujemy skompilowany silnik do folderu z bibliotekami programu
-        cp build_output/libnexus_core.so out/lib/arm64-v8a/ 2>/dev/null || echo "Silnik budowany osobno"
+        # Kopiujemy skompilowany silnik jeśli powstał
+        cp build_output/libnexus_core.so out/lib/arm64-v8a/ 2>/dev/null || echo "Brak pliku silnika, pomijam."
         
         $ANDROID_HOME/build-tools/34.0.0/aapt2 link \
           -I $ANDROID_HOME/platforms/android-34/android.jar \
@@ -49,13 +49,13 @@ jobs:
           -o out/NexusSDK_raw.apk \
           --allow-reserved-package-id
 
-    # 5. Eksport wszystkich gotowych plików binarnych (APK, Serwer, Klient) jako artefaktów
+    # 5. Eksport wszystkich gotowych plików (Używamy inteligentnych ścieżek wyszukiwania **)
     - name: Udostępnij skompilowane narzędzia
       uses: actions/upload-artifact@v4
       with:
         name: nexus_all_tools_android
         path: |
           out/NexusSDK_raw.apk
-          build_output/02_Device_Manager/nexus_server
-          build_output/02_Device_Manager/nexus_client
+          build_output/**/nexus_server
+          build_output/**/nexus_client
           
